@@ -25,8 +25,9 @@ User.create!(name:  "Example User",
             activated_at: Time.zone.now)
 end
 users = User.order(:created_at).take(6)
-50.times do
+50.times do |m|
   content = Faker::Lorem.sentence(5)
+  content += "@Example_User" if m<=3
   users.each { |user| user.microposts.create!(content: content) }
 end
 # リレーションシップ
