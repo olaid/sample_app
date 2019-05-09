@@ -18,7 +18,7 @@ class Micropost < ApplicationRecord
 
     def create_reply_id
       if (reply_name = self.content.match(/@([^ ]*)/))
-        reply_user = User.where("name like ?",reply_name[1])
+        reply_user = User.where("nickname like ?",reply_name[1])
         self.in_reply_to = reply_user.first.id
       end
     end
