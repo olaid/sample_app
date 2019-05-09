@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
 
 	def setup
-		@user= User.new(name:"Example User",email:"user@example.com",
+		@user= User.new(name:"Example User",nickname:"Example_User",email:"user@example.com",
       password: "foobar",password_confirmation: "foobar")
 	end
 	test "should be valid" do
@@ -81,11 +81,12 @@ class UserTest < ActiveSupport::TestCase
     michael.unfollow(archer)
     assert_not michael.following?(archer)
   end
-  
   test "feed should have the right posts" do
     michael = users(:michael)
     archer  = users(:archer)
     lana    = users(:lana)
+    #返信を投稿
+    lana.microposts.create!(content: "hoge @michael_Example hoge")
     # フォローしているユーザーの投稿を確認
     lana.microposts.each do |post_following|
       assert michael.feed.include?(post_following)
@@ -93,6 +94,10 @@ class UserTest < ActiveSupport::TestCase
     # 自分自身の投稿を確認
     michael.microposts.each do |post_self|
       assert michael.feed.include?(post_self)
+    end
+    # 自分への返信投稿を確認
+    Micropost.including_replies(michael).each do |post_reply|
+      assert michael.feed.include?(post_reply)
     end
     # フォローしていないユーザーの投稿を確認
     archer.microposts.each do |post_unfollowed|

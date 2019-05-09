@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :followers, through: :passive_relationships, source: :follower
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
+  before_save   :downcase_nickname
   before_create :create_activation_digest
 
   validates :name,  
@@ -20,6 +21,10 @@ class User < ApplicationRecord
       presence: true, 
       length: { maximum: 255 },
       format: { with: VALID_EMAIL_REGEX },
+      uniqueness: {case_sensitive:false}
+  validates :nickname,
+      presence: true, 
+      length: { maximum: 50 },
       uniqueness: {case_sensitive:false}
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
@@ -87,7 +92,7 @@ class User < ApplicationRecord
                      WHERE follower_id = :user_id"
     Micropost.where("user_id IN (#{following_ids})
                      OR user_id = :user_id
-                     OR in_reply_to = :user_id", user_id: id, user_id: id)
+                     OR in_reply_to = :user_id", user_id: id)
   end
 
   # ユーザーをフォローする
@@ -109,6 +114,11 @@ private
   # メールアドレスをすべて小文字にする
   def downcase_email
     self.email.downcase!
+  end
+
+  # ニックネームをすべて小文字にする
+  def downcase_nickname
+    self.nickname.downcase!
   end
 
   # 有効化トークンとダイジェストを作成および代入する
