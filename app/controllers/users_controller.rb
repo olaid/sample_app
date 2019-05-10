@@ -62,6 +62,12 @@ class UsersController < ApplicationController
     render 'show_follow'
   end
 
+  def search
+    #@users = User.find('nickname LIKE(?)', "%#{params[:keyword]}%")
+    @users = User.find_by(nickname: params[:keyword])
+    render json: @users
+  end
+
   private
 
     def user_params

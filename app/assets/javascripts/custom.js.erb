@@ -1,0 +1,23 @@
+$(function(){
+  $('#user_nickname').change(function () {
+    var input = $.trim($(this).val());
+
+    $.ajax({ //ajax通信で以下のことを行います
+      url: '/users/search', //urlを指定
+      type: 'GET', //メソッドを指定
+      data: ('keyword=' + input), //コントローラーに渡すデータを'keyword=input'にするように指定
+      processData: false,
+      contentType: false,
+      dataType: 'json' //データ形式を指定
+    })
+
+    .done(function(data){ //データを受け取ることに成功したら、dataを引数に取って以下のことする
+      $(data).each(function(i, user){ //dataをuserという変数に代入して、以下のことを繰り返し行う
+        if(user.nickname){
+          $("#new_user").prepend("<div id='error_explanation'><ul><li>Nickname has already been taken<br></li></ul></div>");
+        }
+      });
+    })
+
+  });
+});
