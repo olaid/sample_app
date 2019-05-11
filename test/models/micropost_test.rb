@@ -30,7 +30,7 @@ class MicropostTest < ActiveSupport::TestCase
   test "reply message " do
     @micropost.content = "aaa @Sterling_Archer aaa" 
     @micropost.save
-    assert_equal @micropost.in_reply_to, @reply_user.id.to_s
+    assert_equal @micropost.in_reply_to, @reply_user.id
   end
 
   test "order should be most recent first" do
